@@ -9,6 +9,7 @@ variable hobo_prod_public_subnet_02 {}
 
 variable hobo_prod_private_subnet_01 {}
 variable hobo_prod_private_subnet_02 {}
+variable hobo_prod_private_subnet_03 {}
 
 variable hobo_prod_internet_gateway {}
 variable hobo_prod_route_table_public_subnet {}

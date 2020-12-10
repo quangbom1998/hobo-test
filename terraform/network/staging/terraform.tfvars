@@ -50,6 +50,15 @@ hobo_staging_private_subnet_02 = {
   }
 }
 
+hobo_staging_private_subnet_03 = {
+  availability_zone       = "ap-northeast-1d"
+  cidr                    = "10.0.5.0/24"
+  map_public_ip_on_launch = false
+  tags = {
+    Name = "Staging Private Subnet 03"
+  }
+}
+
 hobo_staging_internet_gateway = {
   tags = {
     Name = "Staging Internet Gateway"

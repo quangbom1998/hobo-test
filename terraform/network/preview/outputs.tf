@@ -22,6 +22,10 @@ output hobo_preview_private_subnet_02_id {
   value       = module.hobo_preview_private_subnet_02.id
 }
 
+output hobo_preview_private_subnet_03_id {
+  value       = module.hobo_preview_private_subnet_03.id
+}
+
 output hobo_preview_internet_gateway_id {
   value       = module.hobo_preview_internet_gateway.id
 }

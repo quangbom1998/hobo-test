@@ -70,6 +70,16 @@ module "hobo_prod_private_subnet_02" {
   tags                    = lookup(var.hobo_prod_private_subnet_02, "tags")
 }
 
+module "hobo_prod_private_subnet_03" {
+  source                  = "../../../modules/aws/vpc/modules/subnets"
+
+  vpc_id                  = module.hobo_prod_vpc.vpc_id
+  availability_zone       = lookup(var.hobo_prod_private_subnet_03, "availability_zone")
+  cidr_block              = lookup(var.hobo_prod_private_subnet_03, "cidr")
+  map_public_ip_on_launch = lookup(var.hobo_prod_private_subnet_03, "map_public_ip_on_launch")
+  tags                    = lookup(var.hobo_prod_private_subnet_03, "tags")
+}
+
 ####################
 # Internet Gateway #
 ####################

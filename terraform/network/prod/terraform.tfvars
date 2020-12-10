@@ -50,6 +50,15 @@ hobo_prod_private_subnet_02 = {
   }
 }
 
+hobo_prod_private_subnet_03 = {
+  availability_zone       = "ap-northeast-1d"
+  cidr                    = "10.0.4.0/24"
+  map_public_ip_on_launch = false
+  tags = {
+    Name = "Prod Private Subnet 03"
+  }
+}
+
 hobo_prod_internet_gateway = {
   tags = {
     Name = "Prod Internet Gateway"
