@@ -4,9 +4,11 @@ variable aws_shared_credentials_file {}
 
 variable hobo_staging_vpc {}
 
-variable hobo_staging_public_subnet {}
+variable hobo_staging_public_subnet_01 {}
+variable hobo_staging_public_subnet_02 {}
 
-variable hobo_staging_private_subnet {}
+variable hobo_staging_private_subnet_01 {}
+variable hobo_staging_private_subnet_02 {}
 
 variable hobo_staging_internet_gateway {}
 variable hobo_staging_route_table_public_subnet {}

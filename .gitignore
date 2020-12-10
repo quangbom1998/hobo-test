@@ -1,5 +1,6 @@
 account.json
 terraform/**/.terraform/
+*hcl*
 *tfstate*
 setup/*
 crash.log

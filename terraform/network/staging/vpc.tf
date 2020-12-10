@@ -1,18 +1,18 @@
-# ##################
-# # Remote Backend #
-# ##################
-# terraform {
-#   backend "s3" {
-#     #bucket name
-#     bucket         = "quang-state-bucket"
-#     key            = "eks-terraform-demo/network/bastion/terraform.tfstate"
-#     region         = "us-east-2"
+##################
+# Remote Backend #
+##################
+terraform {
+  backend "s3" {
+    #bucket name
+    bucket         = "vn-hobo-test-state-bucket"
+    key            = "hobo-test/terraform/network/staging/terraform.tfstate"
+    region         = "ap-northeast-1"
 
-#     #DynamoDB table name
-#     dynamodb_table = "quang-state-locks"
-#     encrypt        = true
-#   }
-# }
+    #DynamoDB table name
+    dynamodb_table = "vn-hobo-test-state-locks"
+    encrypt        = true
+  }
+}
 
 ###############
 # Staging VPC #
@@ -29,25 +29,45 @@ module "hobo_staging_vpc" {
 #################
 # Public Subnet #
 #################
-module "hobo_staging_public_subnet" {
+module "hobo_staging_public_subnet_01" {
   source                  = "../../../modules/aws/vpc/modules/subnets"
 
   vpc_id                  = module.hobo_staging_vpc.vpc_id
-  cidr_block              = lookup(var.hobo_staging_public_subnet, "cidr")
-  map_public_ip_on_launch = lookup(var.hobo_staging_public_subnet, "map_public_ip_on_launch")
-  tags                    = lookup(var.hobo_staging_public_subnet, "tags")
+  cidr_block              = lookup(var.hobo_staging_public_subnet_01, "cidr")
+  map_public_ip_on_launch = lookup(var.hobo_staging_public_subnet_01, "map_public_ip_on_launch")
+  tags                    = lookup(var.hobo_staging_public_subnet_01, "tags")
+}
+
+module "hobo_staging_public_subnet_02" {
+  source                  = "../../../modules/aws/vpc/modules/subnets"
+
+  vpc_id                  = module.hobo_staging_vpc.vpc_id
+  cidr_block              = lookup(var.hobo_staging_public_subnet_02, "cidr")
+  map_public_ip_on_launch = lookup(var.hobo_staging_public_subnet_02, "map_public_ip_on_launch")
+  tags                    = lookup(var.hobo_staging_public_subnet_02, "tags")
 }
 
 ##################
 # Private Subnet #
 ##################
-module "hobo_staging_private_subnet" {
+module "hobo_staging_private_subnet_01" {
   source                  = "../../../modules/aws/vpc/modules/subnets"
 
   vpc_id                  = module.hobo_staging_vpc.vpc_id
-  cidr_block              = lookup(var.hobo_staging_private_subnet, "cidr")
-  map_public_ip_on_launch = lookup(var.hobo_staging_private_subnet, "map_public_ip_on_launch")
-  tags                    = lookup(var.hobo_staging_private_subnet, "tags")
+  availability_zone       = lookup(var.hobo_staging_private_subnet_01, "availability_zone")
+  cidr_block              = lookup(var.hobo_staging_private_subnet_01, "cidr")
+  map_public_ip_on_launch = lookup(var.hobo_staging_private_subnet_01, "map_public_ip_on_launch")
+  tags                    = lookup(var.hobo_staging_private_subnet_01, "tags")
+}
+
+module "hobo_staging_private_subnet_02" {
+  source                  = "../../../modules/aws/vpc/modules/subnets"
+
+  vpc_id                  = module.hobo_staging_vpc.vpc_id
+  availability_zone       = lookup(var.hobo_staging_private_subnet_02, "availability_zone")
+  cidr_block              = lookup(var.hobo_staging_private_subnet_02, "cidr")
+  map_public_ip_on_launch = lookup(var.hobo_staging_private_subnet_02, "map_public_ip_on_launch")
+  tags                    = lookup(var.hobo_staging_private_subnet_02, "tags")
 }
 
 ####################
@@ -81,18 +101,25 @@ module "hobo_staging_route_internet_gateway" {
   gateway_id              = module.hobo_staging_internet_gateway.id
 }
 
-###############################################################
-# Route Table Association (Internet Gateway & Private Subnet) #
-###############################################################
-module "hobo_staging_route_table_association_public_subnet" {
+##############################################################
+# Route Table Association (Internet Gateway & Public Subnet) #
+##############################################################
+module "hobo_staging_route_table_association_public_subnet_01" {
   source                  = "../../../modules/aws/route_table/modules/route_table_association"
   
-  subnet_id               = module.hobo_staging_public_subnet.id
+  subnet_id               = module.hobo_staging_public_subnet_01.id
+  route_table_id          = module.hobo_staging_route_table_public_subnet.id
+}
+
+module "hobo_staging_route_table_association_public_subnet_02" {
+  source                  = "../../../modules/aws/route_table/modules/route_table_association"
+  
+  subnet_id               = module.hobo_staging_public_subnet_02.id
   route_table_id          = module.hobo_staging_route_table_public_subnet.id
 }
 
 ##############################
-# Elastic Ip For NAT Gateway #
+# Elastic IP For NAT Gateway #
 ##############################
 module "hobo_staging_elastic_ip" {
   source                  = "../../../modules/aws/vpc/modules/elastic_ip"
@@ -104,13 +131,13 @@ module "hobo_staging_elastic_ip" {
 }
 
 ###############
-# Nat Gateway #
+# NAT Gateway #
 ###############
 module "hobo_staging_nat_gateway" {
   source                  = "../../../modules/aws/vpc/modules/nat_gateway"
 
   allocation_id           = module.hobo_staging_elastic_ip.id
-  subnet_id               = module.hobo_staging_public_subnet.id
+  subnet_id               = module.hobo_staging_public_subnet_01.id
   tags                    = lookup(var.hobo_staging_nat_gateway, "tags")
 
   depends_on              = [module.hobo_staging_internet_gateway]
@@ -140,10 +167,10 @@ module "hobo_staging_route_nat_gateway" {
 ##########################################################
 # Route Table Association (NAT Gateway & Private Subnet) #
 ##########################################################
-module "hobo_staging_route_table_association_nat_gateway_public_subnet" {
+module "hobo_staging_route_table_association_nat_gateway_private_subnet_01" {
   source                  = "../../../modules/aws/route_table/modules/route_table_association"
   
-  subnet_id               = module.hobo_staging_private_subnet.id
+  subnet_id               = module.hobo_staging_private_subnet_01.id
   route_table_id          = module.hobo_staging_route_table_private_subnet.id
 }
 

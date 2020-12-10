@@ -6,16 +6,20 @@ output hobo_staging_vpc_cidr {
   value       = module.hobo_staging_vpc.cidr_block
 }
 
-output hobo_staging_public_subnet_id {
-  value       = module.hobo_staging_public_subnet.id
+output hobo_staging_public_subnet_01_id {
+  value       = module.hobo_staging_public_subnet_01.id
 }
 
-output hobo_staging_public_subnet_cidr_block {
-  value       = module.hobo_staging_public_subnet.cidr_block
+output hobo_staging_public_subnet_02_id {
+  value       = module.hobo_staging_public_subnet_02.id
 }
 
-output hobo_staging_private_subnet_cidr_block {
-  value       = module.hobo_staging_private_subnet.cidr_block
+output hobo_staging_private_subnet_01_id {
+  value       = module.hobo_staging_private_subnet_01.id
+}
+
+output hobo_staging_private_subnet_02_id {
+  value       = module.hobo_staging_private_subnet_02.id
 }
 
 output hobo_staging_internet_gateway_id {
